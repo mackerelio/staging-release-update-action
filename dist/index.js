@@ -7,7 +7,7 @@ require('./sourcemap-register.js');module.exports =
 
 const core = __nccwpck_require__(186);
 const github = __nccwpck_require__(438);
-const readdirRecursively = __nccwpck_require__(632);
+const read = __nccwpck_require__(117);
 
 async function run() {
   try {
@@ -36,7 +36,7 @@ async function run() {
       body: commit.data.commit.message,
     });
 
-    const artifacts = readdirRecursively(directory);
+    const artifacts = read('.', () => true, [], directory);
 
     core.startGroup('Assets')
     for (let file of artifacts) {
@@ -3837,6 +3837,42 @@ exports.Deprecation = Deprecation;
 
 /***/ }),
 
+/***/ 117:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+var fs = __nccwpck_require__(747)
+var path = __nccwpck_require__(622)
+
+module.exports = read
+
+function read(root, filter, files, prefix) {
+  prefix = prefix || ''
+  files = files || []
+  filter = filter || noDotFiles
+
+  var dir = path.join(root, prefix)
+  if (!fs.existsSync(dir)) return files
+  if (fs.statSync(dir).isDirectory())
+    fs.readdirSync(dir)
+    .filter(function (name, index) {
+      return filter(name, index, dir)
+    })
+    .forEach(function (name) {
+      read(root, filter, files, path.join(prefix, name))
+    })
+  else
+    files.push(prefix)
+
+  return files
+}
+
+function noDotFiles(x) {
+  return x[0] !== '.'
+}
+
+
+/***/ }),
+
 /***/ 467:
 /***/ ((module, exports, __nccwpck_require__) => {
 
@@ -5885,30 +5921,6 @@ function wrappy (fn, cb) {
     return ret
   }
 }
-
-
-/***/ }),
-
-/***/ 632:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-const fs = __nccwpck_require__(747);
-
-// https://blog.araya.dev/posts/2019-05-09/node-recursive-readdir.html
-const readdirRecursively = (dir, files = []) => {
-  const dirents = fs.readdirSync(dir, { withFileTypes: true });
-  const dirs = [];
-  for (const dirent of dirents) {
-    if (dirent.isDirectory()) dirs.push(`${dir}/${dirent.name}`);
-    if (dirent.isFile()) files.push(`${dir}/${dirent.name}`);
-  }
-  for (const d of dirs) {
-    files = readdirRecursively(d, files);
-  }
-  return files;
-};
-
-module.exports = readdirRecursively;
 
 
 /***/ }),

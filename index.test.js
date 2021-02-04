@@ -1,8 +1,9 @@
 const io = require('@actions/io');
 const fs = require('fs');
-const readdirRecursively = require('./readdirRecursively');
 
-test('readdirRecursively', async () => {
+const read = require('fs-readdir-recursive');
+
+test('read assets', async () => {
   await io.rmRF('tmp-readdir/');
   await io.mkdirP('tmp-readdir/1/2/');
   const files = [
@@ -16,7 +17,7 @@ test('readdirRecursively', async () => {
     });
   }
 
-  const result = readdirRecursively('tmp-readdir');
+  const result = read('.', () => true, [], 'tmp-readdir/');
   expect(result).toEqual(expect.arrayContaining(files));
 });
 

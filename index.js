@@ -1,6 +1,6 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
-const readdirRecursively = require('./readdirRecursively');
+const read = require('fs-readdir-recursive');
 
 async function run() {
   try {
@@ -29,7 +29,7 @@ async function run() {
       body: commit.data.commit.message,
     });
 
-    const artifacts = readdirRecursively(directory);
+    const artifacts = read('.', () => true, [], directory);
 
     core.startGroup('Assets')
     for (let file of artifacts) {
