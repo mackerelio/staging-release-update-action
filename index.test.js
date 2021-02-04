@@ -1,23 +1,22 @@
-const wait = require('./wait');
-const process = require('process');
-const cp = require('child_process');
-const path = require('path');
+const io = require('@actions/io');
+const fs = require('fs');
+const readdirRecursively = require('./readdirRecursively');
 
-test('throws invalid number', async () => {
-  await expect(wait('foo')).rejects.toThrow('milliseconds not a number');
+test('readdirRecursively', async () => {
+  await io.rmRF('tmp-readdir/');
+  await io.mkdirP('tmp-readdir/1/2/');
+  const files = [
+    'tmp-readdir/1.txt',
+    'tmp-readdir/1/2.txt',
+    'tmp-readdir/1/2/3.txt',
+  ];
+  for (let filename of files) {
+    fs.writeFile(filename, 'Hello', (err) => {
+      if (err) throw err;
+    });
+  }
+
+  const result = readdirRecursively('tmp-readdir');
+  expect(result).toEqual(expect.arrayContaining(files));
 });
 
-test('wait 500 ms', async () => {
-  const start = new Date();
-  await wait(500);
-  const end = new Date();
-  var delta = Math.abs(end - start);
-  expect(delta).toBeGreaterThanOrEqual(500);
-});
-
-// shows how the runner will run a javascript action with env / stdout protocol
-test('test runs', () => {
-  process.env['INPUT_MILLISECONDS'] = 500;
-  const ip = path.join(__dirname, 'index.js');
-  console.log(cp.execSync(`node ${ip}`, {env: process.env}).toString());
-})
