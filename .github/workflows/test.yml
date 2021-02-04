@@ -20,6 +20,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+
+    - run: |
+        mkdir -p artifacts/1/2/
+        echo 1 > artifacts/1.txt
+        echo 2 > artifacts/1/2.txt
+        echo 3 > artifacts/1/2/3.txt
+
     - uses: ./
       with:
-        milliseconds: 1000
+        directory: artifacts/
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        tag: staging
