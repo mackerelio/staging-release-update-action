@@ -26,7 +26,7 @@ async function run() {
       repo,
       tag_name: tag,
       prerelease: true,
-      body: commit.data.commit.message,
+      body: ref + "\n---\n" + commit.data.commit.message,
     });
 
     const artifacts = read('.', () => true, [], directory);
