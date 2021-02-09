@@ -1,6 +1,6 @@
 # staging-release-update-action
 
-<a href="https://github.com/yseto/staging-release-update-action/actions"><img alt="javscript-action status" src="https://github.com/yseto/staging-release-update-action/workflows/units-test/badge.svg"></a>
+<a href="https://github.com/mackerelio/staging-release-update-action/actions"><img alt="javscript-action status" src="https://github.com/mackerelio/staging-release-update-action/workflows/units-test/badge.svg"></a>
 
 ## Code in Main
 
@@ -20,7 +20,7 @@ $ npm test
 ## Usage
 
 ```yaml
-uses: yseto/staging-release-update-action@main
+uses: mackerelio/staging-release-update-action@main
 with:
   directory: artifacts/
   github-token: ${{ secrets.GITHUB_TOKEN }}
