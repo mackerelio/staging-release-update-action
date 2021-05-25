@@ -17,7 +17,7 @@ jobs:
 
   # test action works running from the graph
   test:
-    if: github.actor != 'dependabot[bot]' && always()
+    if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
