@@ -12,8 +12,7 @@ jobs:
       - run: |
           npm ci
       - run: |
-          npm run build
-          npm run package
+          npm run prepare
       - uses: peter-evans/create-pull-request@v3
         with:
           branch: update-dist
