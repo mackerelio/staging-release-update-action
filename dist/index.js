@@ -6259,7 +6259,7 @@ async function run() {
     const commit = await octokit.rest.repos.getCommit({ owner, repo, ref });
 
     const staging = await octokit.rest.repos.getReleaseByTag({ owner, repo, tag });
-    await octokit.repos.deleteRelease({ owner, repo, release_id: staging.data.id });
+    await octokit.rest.repos.deleteRelease({ owner, repo, release_id: staging.data.id });
 
     const newStaging = await octokit.rest.repos.createRelease({
       owner,
