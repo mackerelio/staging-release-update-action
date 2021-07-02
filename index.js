@@ -16,12 +16,12 @@ async function run() {
     const context = github.context;
     const { repo: { owner, repo }, ref } = context;
 
-    const commit = await octokit.repos.getCommit({ owner, repo, ref });
+    const commit = await octokit.rest.repos.getCommit({ owner, repo, ref });
 
-    const staging = await octokit.repos.getReleaseByTag({ owner, repo, tag });
-    await octokit.repos.deleteRelease({ owner, repo, release_id: staging.data.id });
+    const staging = await octokit.rest.repos.getReleaseByTag({ owner, repo, tag });
+    await octokit.rest.repos.deleteRelease({ owner, repo, release_id: staging.data.id });
 
-    const newStaging = await octokit.repos.createRelease({
+    const newStaging = await octokit.rest.repos.createRelease({
       owner,
       repo,
       tag_name: tag,
@@ -35,7 +35,7 @@ async function run() {
     for (let file of artifacts) {
       core.info('uploading ' + file);
 
-      await octokit.repos.uploadReleaseAsset({
+      await octokit.rest.repos.uploadReleaseAsset({
         owner, repo,
         release_id: newStaging.data.id,
         name: path.basename(file),
