@@ -30,7 +30,7 @@
     "fs-readdir-recursive": "^1.1.0"
   },
   "devDependencies": {
-    "@actions/io": "^1.1.1",
+    "@actions/io": "^1.1.2",
     "@vercel/ncc": "^0.33.3",
     "eslint": "^8.11.0",
     "jest": "^27.5.1"
