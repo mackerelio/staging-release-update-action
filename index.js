@@ -1,19 +1,18 @@
-const core = require('@actions/core');
-const github = require('@actions/github');
-const read = require('fs-readdir-recursive');
+import { getInput, startGroup, info, endGroup, setFailed } from '@actions/core';
+import { getOctokit, context as _context } from '@actions/github';
+import read from 'fs-readdir-recursive';
+import fs from 'fs/promises';
+import { basename } from 'path';
 
 async function run() {
   try {
-    const fs = require('fs').promises;
-    const path = require('path');
+    const token = getInput('github-token');
+    const directory = getInput('directory');
+    const tag = getInput('tag');
 
-    const token = core.getInput('github-token');
-    const directory = core.getInput('directory');
-    const tag = core.getInput('tag');
+    const octokit = getOctokit(token);
 
-    const octokit = github.getOctokit(token);
-
-    const context = github.context;
+    const context = _context;
     const { repo: { owner, repo }, ref } = context;
 
     const commit = await octokit.rest.repos.getCommit({ owner, repo, ref });
@@ -31,22 +30,22 @@ async function run() {
 
     const artifacts = read('.', () => true, [], directory);
 
-    core.startGroup('Assets')
+    startGroup('Assets')
     for (let file of artifacts) {
-      core.info('uploading ' + file);
+      info('uploading ' + file);
 
       await octokit.rest.repos.uploadReleaseAsset({
         owner, repo,
         release_id: newStaging.data.id,
-        name: path.basename(file),
+        name: basename(file),
         data: await fs.readFile(file),
       });
     }
-    core.endGroup()
+    endGroup()
 
-    core.info("\u001b[1mStaging Release: " + newStaging.data.html_url);
+    info("\u001b[1mStaging Release: " + newStaging.data.html_url);
   } catch (error) {
-    core.setFailed(error.message);
+    setFailed(error.message);
   }
 }
 
